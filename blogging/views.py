@@ -21,5 +21,5 @@ class PostListView(ListView):
     template_name = 'blogging/list.html'
 
 class PostDetailView(DetailView):
-    model = Post
+    queryset = Post.objects.exclude(published_date__isnull=True)
     template_name = 'blogging/detail.html'
