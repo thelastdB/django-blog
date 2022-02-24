@@ -1,10 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django import forms
+from django.utils import timezone
+from blogging.forms import PostForm
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
 from blogging.models import Post
+
+
+def add_post(request):
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post_instance = form.save(commit=False)
+            post_instance.created_date = timezone.now()
+            post_instance.published_date = timezone.now()
+            post_instance.author = request.user
+            post_instance.save()
+            return redirect("/")
+    else:
+        form = PostForm()
+        return render(request, "blogging/add.html", {"form": form})
 
 
 def stub_view(request, *args, **kwargs):
