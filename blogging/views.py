@@ -14,6 +14,9 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from blogging.serializers import UserSerializer, PostSerializer, CategorySerializer
 
+from django.contrib.syndication.views import Feed
+from django.urls import reverse
+
 
 def add_post(request):
     if request.method == "POST":
@@ -67,3 +70,28 @@ class PostViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+
+class LatestPostsFeed(Feed):
+    title = "Latest posts from my blog"
+    link = "/postfeed/"
+    description = "All of the latests posts to be published on my blog."
+
+    def items(self):
+        return Post.objects.order_by("-published_date")[:5]
+
+    def item_title(self, item):
+        return item.title
+
+    def item_text(self, item):
+        return item.text
+
+    def item_author(self, item):
+        return item.author
+
+    def item_published_date(self, item):
+        return item.published_date
+
+    # item_link is only needed if NewsItem has no get_absolute_url method.
+    def item_link(self, item):
+        return reverse("blog_detail", args=[item.pk])
