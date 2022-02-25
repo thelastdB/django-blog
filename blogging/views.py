@@ -7,7 +7,12 @@ from django.template import loader
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
-from blogging.models import Post
+from django.contrib.auth.models import User
+from blogging.models import Post, Category
+
+from rest_framework import viewsets
+from rest_framework import permissions
+from blogging.serializers import UserSerializer, PostSerializer, CategorySerializer
 
 
 def add_post(request):
@@ -46,3 +51,19 @@ class PostListView(ListView):
 class PostDetailView(DetailView):
     queryset = Post.objects.exclude(published_date__isnull=True)
     template_name = "blogging/detail.html"
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class PostViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
