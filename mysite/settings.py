@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.github",
     "polling",
     "blogging",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -139,3 +140,8 @@ SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
 LOGIN_REDIRECT_URL = "/"
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+}
