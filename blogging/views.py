@@ -17,7 +17,10 @@ from blogging.serializers import UserSerializer, PostSerializer, CategorySeriali
 from django.contrib.syndication.views import Feed
 from django.urls import reverse
 
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def add_post(request):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -92,6 +95,5 @@ class LatestPostsFeed(Feed):
     def item_published_date(self, item):
         return item.published_date
 
-    # item_link is only needed if NewsItem has no get_absolute_url method.
     def item_link(self, item):
         return reverse("blog_detail", args=[item.pk])
